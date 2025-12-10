@@ -68,6 +68,10 @@ def merge_user_data(accounts, passwords, email_suffix, account_prefix):
     for username,data in accounts.items():
         password = passwords.get(username)
 
+        # When account exists but password is missing
+        if password is None:
+            print(f"Warning: No password found for username '{username}'")
+
         record = {
             "accountnumber": f"{account_prefix}{data["accountnumber"]}",
             "username": username,
@@ -78,6 +82,11 @@ def merge_user_data(accounts, passwords, email_suffix, account_prefix):
         }
     
         final_users.append(record)
+
+    # When password exists but doesn't correspond to an account 
+    for username in passwords:
+        if username not in accounts:
+            print(f"Warning: Password found for an unknown user '{username}'")
 
     return final_users
 
