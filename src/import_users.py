@@ -151,5 +151,29 @@ def main():
     conn = get_connection(args.db)
     initialize_database(conn, "data/createUsersTable.sql")
 
+    # Insert or update each user
+    inserted = 0
+    updated = 0
+
+    for user in final_users:
+        # Check if user exists already
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM Users WHERE username = ?", (user["username"],))
+        existing = cur.fetchone()
+
+        # Perform upsert
+        upsert_user(conn, user)
+
+        if existing:
+            updated += 1
+        else:
+            inserted += 1
+
+    print("\nDatabase update complete:")
+    print(f"  New users inserted : {inserted}")
+    print(f"  Existing users updated : {updated}")
+    print(f"  Total users processed : {len(final_users)}")
+
+
 if __name__ == "__main__":
     main()
