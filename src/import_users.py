@@ -4,6 +4,8 @@ import argparse
 import os
 import sys
 import csv
+from db import get_connection, initialize_database, upsert_user
+
 
 def validate_file(path, label):
     """Ensure file exists"""
@@ -114,6 +116,11 @@ def parse_arguments():
         required=True
     )
 
+    parser.add_argument(
+        "--db",
+        default="users.db"
+    )
+
     args = parser.parse_args()
 
     validate_file(args.users, "User Accounts")
@@ -140,6 +147,9 @@ def main():
     final_users = merge_user_data(accounts, passwords, args.emailsuffix, args.accountprefix)
 
     print(f"Final merged records: {len(final_users)} users")
+
+    conn = get_connection(args.db)
+    initialize_database(conn, "data/createUsersTable.sql")
 
 if __name__ == "__main__":
     main()
