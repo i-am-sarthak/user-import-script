@@ -47,3 +47,45 @@ Otherwise, schema mismatch issue like VARCHAR length constraint might appear.
 - To avoid runtime schema migrations, the provided createUsersTable.sql file was updated to increase column lengths for username and emailaccount.
 - Users without passwords are inserted with NULL password.
 - Password records that do not match any username are ignored.
+
+# Example Output
+
+**First Run (fresh database)**
+```bash
+Arguments parsed successfully:
+  Users CSV      : ./data/useraccounts.csv
+  Passwords CSV  : ./data/passwords.csv
+  Email Suffix   : @clearcable.ca
+  Account Prefix : 001-
+Loaded 89 user accounts
+Loaded 90 passwords
+Warning: No password found for username 'testuser'
+Warning: Password found for an unknown user 'user89'
+Warning: Password found for an unknown user 'user90'
+Final merged records: 89 users
+
+Database update complete:
+  New users inserted : 89
+  Existing users updated : 0
+  Total users processed : 89
+```
+
+**Second Run (script re-run with same data)**
+```bash
+Arguments parsed successfully:
+  Users CSV      : ./data/useraccounts.csv
+  Passwords CSV  : ./data/passwords.csv
+  Email Suffix   : @clearcable.ca
+  Account Prefix : 001-
+Loaded 89 user accounts
+Loaded 90 passwords
+Warning: No password found for username 'testuser'
+Warning: Password found for an unknown user 'user89'
+Warning: Password found for an unknown user 'user90'
+Final merged records: 89 users
+
+Database update complete:
+  New users inserted : 0
+  Existing users updated : 89
+  Total users processed : 89
+```
